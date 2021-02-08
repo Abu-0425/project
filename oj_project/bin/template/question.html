@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>我的OJ - {{title}}</title>
+        <meta name="description" content="我的OJ" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--Bootstrap 4-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+            <a class="navbar-brand font-weight-bold" href="#">我的OJ</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="topMenu">
+            </div>
+        </nav>
+
+
+        <!--components-->
+        <section class="my-5 pt-5">
+            <div class="container">
+                <div class="jumbotron">
+                    <h1>{{id}}.{{title}}({{star}})</h1>
+                    <div><pre>{{desc}}</pre></div>
+                </div>
+                <div class="form-group">
+                  <div  id="editor" style="min-height:400px"><textarea class="form-control" id="" name="code" rows=30 cols=100>{{code}}</textarea>
+                  </div>
+                  <input type="button" id="submit" class="btn btn-primary" value="提交" onclick="run({{id}})">
+                </div>
+
+                <div class="jumbotron" id="output"></div>
+            </div>
+        </section>
+
+        <!--footer-->
+        <section class="py-5 bg-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-xs-12 text-center">
+                        <!-- <h3>Upgrade to Pro Version</h3>
+                        <p class="pt-2">
+                            We are working on <b>Charcoal Pro</b> which will be released soon. The pro version 
+                            will have a lot more components, sections, icons, plugins and example pages. 
+                            Join the waiting list to get notified when we release it (plus discount code).
+                        </p>
+                        <a class="btn btn-warning" href="https://wireddots.com/newsletter">Join Waiting List</a>
+                        <hr class="my-5"/> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="/js/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+        <script src="/js/app.js"></script>
+        <!-- ace -->
+        <script src="https://cdn.bootcss.com/ace/1.2.9/ace.js"></script>
+        <script src="https://cdn.bootcss.com/ace/1.2.9/ext-language_tools.js"></script>
+        <script>
+            var editor = ace.edit("editor");
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true
+            });
+            editor.setTheme("ace/theme/twilight");
+            editor.session.setMode("ace/mode/c_cpp");
+            editor.resize();
+            document.getElementById('editor').style.fontSize='20px';
+
+            function run(question_id) {
+              var code = editor.getValue()
+              htmlobj=$.ajax({
+                url:"/compile/" + question_id,
+                type:"POST",
+                data: {"code": code},
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                async:false,
+              });
+              // alert(htmlobj.responseText)
+              $("#output").html(htmlobj.responseText);
+            }
+        </script>
+    </body>
+</html>
